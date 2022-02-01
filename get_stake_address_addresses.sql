@@ -1,6 +1,5 @@
 select 
-DISTINCT ON (tx_out.address) 
-tx_out.address
+DISTINCT (tx_out.address) as address
 FROM "tx_out"
 INNER JOIN "stake_address" AS "sa" ON "tx_out"."stake_address_id" = "sa"."id"
 WHERE "sa"."view" = 'stake_test1urtt0tpxwxyll6gclxnz5srjx3zjr099pgrqkd3st7339tcr0u0ph'
