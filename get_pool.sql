@@ -13,5 +13,5 @@ INNER JOIN "epoch" ON "epoch"."no" = "pu"."active_epoch_no"
 LEFT JOIN "pool_metadata_ref" AS "pmr" ON "pmr"."id" = "pu"."meta_id"
 LEFT JOIN "pool_offline_data" AS "pod" ON "pod"."pmr_id" = "pmr"."id"
 WHERE "pool_hash"."view" = 'pool1cr8vpy3ta3smcxjq8hfu8n2chxhtc78ukfruqjhfgarf5azypen'
-ORDER BY "pu"."registered_tx_id" DESC
+ORDER BY CASE WHEN epoch.no is null then 0 else "pu"."registered_tx_id" end DESC, "pu"."active_epoch_no" DESC
 LIMIT 1
