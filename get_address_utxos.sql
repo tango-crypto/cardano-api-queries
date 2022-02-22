@@ -9,10 +9,11 @@ WITH "t" AS
 		LEFT JOIN "tx_in" ON "tx_out"."tx_id" = "tx_in"."tx_out_id"
 		AND "tx_out"."index" = "tx_in"."tx_out_index"
 		WHERE TX_IN.TX_IN_ID IS NULL
-			AND TX_OUT.ADDRESS = 'addr_test1wrsexavz37208qda7mwwu4k7hcpg26cz0ce86f5e9kul3hqzlh22t'
-			AND TX_OUT.TX_ID < 3125571
-		ORDER BY "tx_out"."tx_id" DESC
-		LIMIT 10)
+			AND TX_OUT.ADDRESS = 'addr_test1wrhtrx98lc6dc2zk0uuv0hjjcrffq5fvllq9k7u6cajfvhq0rqywz'
+			AND TX_OUT.TX_ID < 2656228 OR (tx_out.tx_id = 2507820 AND tx_out.index < 1)
+		ORDER BY "tx_out"."tx_id" DESC, tx_out.index DESC
+		LIMIT 10
+	)
 SELECT "t"."tx_id",
 	"t"."address",
 	ENCODE(TX.HASH,'hex') AS HASH,
