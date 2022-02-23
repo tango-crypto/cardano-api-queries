@@ -15,13 +15,14 @@ WITH "delegations" AS
 							"sd"."addr_id"
 						FROM "stake_deregistration" AS "sd"
 						ORDER BY SD.ADDR_ID,
-							SD.TX_ID DESC) AS "sd" ON "sd"."addr_id" = "d"."addr_id"
+							SD.TX_ID DESC
+                    ) AS "sd" ON "sd"."addr_id" = "d"."addr_id"
 				INNER JOIN "pool_hash" AS "p" ON "p"."id" = "d"."pool_hash_id"
 				WHERE SD.ADDR_ID IS NULL
 					OR SD.TX_ID < D.TX_ID
 				ORDER BY D.ADDR_ID,
 					D.TX_ID DESC) AS "d" ON "d"."pool_hash_id" = "p"."id"
-		WHERE P.VIEW = 'pool1rnsw42f2q0u9fc32ttxy9l085n736jxz07lvwutz63wpyef03zh'
+		WHERE P.VIEW = 'pool1gpzkwf3ntp7ky6yvyky8q6qu4dyup5y6v4pxzn56yut8sqp6k53'
 		ORDER BY "d"."tx_id" DESC
 		LIMIT 50)
 SELECT "r"."tx_id",
@@ -33,19 +34,16 @@ FROM
 			COALESCE(SUM (R.AMOUNT), 0) AS REWARDS
 		FROM "delegations" AS "d"
 		LEFT JOIN "reward" AS "r" ON "r"."addr_id" = "d"."addr_id"
-		AND R.POOL_ID IS NOT NULL
 		GROUP BY D.TX_ID) AS "r"
 INNER JOIN
 	(SELECT D.TX_ID,
 			COALESCE(SUM (W.AMOUNT), 0) AS WITHDRAWALS
 		FROM "delegations" AS "d"
 		LEFT JOIN
-			(SELECT "w"."addr_id",
-					"w"."amount",
-					"block"."epoch_no"
+			(SELECT DISTINCT ON (w.tx_id) "w"."addr_id",
+					"w"."amount"
 				FROM "withdrawal" AS "w"
-				INNER JOIN "tx" ON "tx"."id" = "w"."tx_id"
-				INNER JOIN "block" ON "block"."id" = "tx"."block_id") AS "w" ON "w"."addr_id" = "d"."addr_id"
+            ) AS "w" ON "w"."addr_id" = "d"."addr_id"
 		GROUP BY D.TX_ID) AS "w" ON "w"."tx_id" = "r"."tx_id"
 INNER JOIN
 	(SELECT D.TX_ID,
