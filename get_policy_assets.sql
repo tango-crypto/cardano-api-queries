@@ -17,8 +17,7 @@ SELECT
 	"asset"."asset_name",
 	"asset"."fingerprint",
 	"asset"."quantity",
-	FIRST_VALUE(ENCODE(TX.HASH,'hex')) OVER(PARTITION BY ASSET.FINGERPRINT ORDER BY TX.ID ASC) AS INITIAL_MINT_TX_HASH,
-	FIRST_VALUE(TX_METADATA.JSON || JSONB_BUILD_OBJECT('key',TX_METADATA.KEY)) OVER (PARTITION BY ASSET.FINGERPRINT																																																								ORDER BY TX.ID DESC) AS ON_CHAIN_METADATA
+	FIRST_VALUE(ENCODE(TX.HASH,'hex')) OVER(PARTITION BY ASSET.FINGERPRINT ORDER BY TX.ID ASC) AS INITIAL_MINT_TX_HASH
 FROM "asset"
 INNER JOIN "ma_tx_mint" ON "asset"."id" = "ma_tx_mint"."ident"
 INNER JOIN "tx" ON "ma_tx_mint"."tx_id" = "tx"."id"
