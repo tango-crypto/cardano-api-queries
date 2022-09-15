@@ -2,24 +2,15 @@ SELECT ENCODE(ASSET.POLICY,'hex') AS POLICY_ID,
 	ENCODE(ASSET.NAME,'hex') AS ASSET_NAME,
 	"asset"."fingerprint",
 	SUM(MA_TX_MINT.QUANTITY) AS QUANTITY,
-	COUNT(*) AS MINT_OR_BURN_COUNT,
-	(SELECT ENCODE(TX.HASH,'hex')
-		FROM TX
-		INNER JOIN MA_TX_MINT ON TX.ID = MA_TX_MINT.TX_ID
-		INNER JOIN MULTI_ASSET AS ASSET ON ASSET.ID = MA_TX_MINT.IDENT
-		WHERE ASSET.FINGERPRINT = 'asset1uq7kmkq4re85zgxtuzweayl23lgs7tjytw24u2'
-		ORDER BY TX.ID ASC
-		LIMIT 1) AS INITIAL_MINT_TX_HASH,
-
-	(SELECT TX_METADATA.JSON || JSONB_BUILD_OBJECT('key',TX_METADATA.KEY)
-		FROM TX_METADATA
-		INNER JOIN MA_TX_MINT ON TX_METADATA.TX_ID = MA_TX_MINT.TX_ID
-		INNER JOIN MULTI_ASSET AS ASSET ON ASSET.ID = MA_TX_MINT.IDENT
-		WHERE ASSET.FINGERPRINT = 'asset1uq7kmkq4re85zgxtuzweayl23lgs7tjytw24u2'
-		LIMIT 1) AS ON_CHAIN_METADATA
+	COALESCE(SUM(MA_TX_MINT.QUANTITY) FILTER (WHERE MA_TX_MINT.QUANTITY > 0),0) AS MINT_QUANTITY,
+	COALESCE(SUM(MA_TX_MINT.QUANTITY) FILTER (WHERE MA_TX_MINT.QUANTITY < 0),0) AS BURN_QUANTITY,
+	COUNT(*) AS TRANSACTIONS,
+	MIN(block.time) as created_at,
+	ARRAY_AGG (JSONB_BUILD_OBJECT('json',TX_METADATA.JSON) || JSONB_BUILD_OBJECT('key',TX_METADATA.KEY)) AS METADATA
 FROM "ma_tx_mint"
+INNER JOIN "tx" ON "tx"."id" = "ma_tx_mint"."tx_id"
+INNER JOIN "block" ON "block"."id" = "tx"."block_id"
 INNER JOIN "multi_asset" AS "asset" ON "asset"."id" = "ma_tx_mint"."ident"
+LEFT JOIN "tx_metadata" ON "tx_metadata"."tx_id" = "tx"."id"
 WHERE ASSET.FINGERPRINT = 'asset1uq7kmkq4re85zgxtuzweayl23lgs7tjytw24u2'
-GROUP BY "asset"."policy",
-	"asset"."name",
-	"asset"."fingerprint"
+GROUP BY "asset"."policy", "asset"."name", "asset"."fingerprint";
