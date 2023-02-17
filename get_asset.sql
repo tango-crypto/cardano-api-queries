@@ -1,20 +1,28 @@
+WITH asset AS (
+	SELECT 
+		MIN(encode(asset.policy, 'hex')) as policy_id, 
+		MIN(encode(asset.name, 'hex')) as asset_name,
+		MIN(asset.fingerprint) as fingerprint,
+		SUM(MA_TX_MINT.QUANTITY) AS QUANTITY,
+		COALESCE(SUM(MA_TX_MINT.QUANTITY) FILTER (WHERE MA_TX_MINT.QUANTITY > 0),0) AS MINT_QUANTITY,
+		COALESCE(SUM(MA_TX_MINT.QUANTITY) FILTER (WHERE MA_TX_MINT.QUANTITY < 0),0) AS BURN_QUANTITY,
+		COUNT(*) AS MINT_TRANSACTIONS,
+		MIN(BLOCK.TIME) AS CREATED_AT,
+		MAX(BLOCK.TIME) AS UPDATED_AT,
+		MAX(tx.id) FILTER (WHERE TX_METADATA.KEY IS NOT NULL) as last_minted_tx_id
+	FROM "ma_tx_mint"
+	INNER JOIN "multi_asset" AS "asset" ON "asset"."id" = "ma_tx_mint"."ident"
+	INNER JOIN "tx" ON "tx"."id" = "ma_tx_mint"."tx_id"
+	INNER JOIN "block" ON "block"."id" = "tx"."block_id"
+	LEFT JOIN "tx_metadata" ON "tx_metadata"."tx_id" = tx.id
+	WHERE ASSET.FINGERPRINT = 'asset1l6rg97vuuqf7ycqyz5lwkmvzu4s2hdqdlk0yk2'
+)
 SELECT 
-	ENCODE(ASSET.POLICY,'hex') AS POLICY_ID,
-	ENCODE(ASSET.NAME,'hex') AS ASSET_NAME,
-	"asset"."fingerprint",
-	SUM(MA_TX_MINT.QUANTITY) AS QUANTITY,
-	COALESCE(SUM(MA_TX_MINT.QUANTITY) FILTER (WHERE MA_TX_MINT.QUANTITY > 0),0) AS MINT_QUANTITY,
-	COALESCE(SUM(MA_TX_MINT.QUANTITY) FILTER (WHERE MA_TX_MINT.QUANTITY < 0),0) AS BURN_QUANTITY,
-	COUNT(*) AS MINT_TRANSACTIONS,
-	MIN(BLOCK.TIME) AS CREATED_AT,
-	array_remove(array_agg(
-		CASE WHEN TX_METADATA.KEY IS NOT NULL THEN JSONB_BUILD_OBJECT('json',TX_METADATA.JSON) || JSONB_BUILD_OBJECT('label',TX_METADATA.KEY) ELSE NULL END),
-	NULL) AS METADATA
-FROM "ma_tx_mint"
-INNER JOIN "tx" ON "tx"."id" = "ma_tx_mint"."tx_id"
-INNER JOIN "block" ON "block"."id" = "tx"."block_id"
-INNER JOIN "multi_asset" AS "asset" ON "asset"."id" = "ma_tx_mint"."ident"
-LEFT JOIN "tx_metadata" ON "tx_metadata"."tx_id" = "tx"."id"
-WHERE ASSET.POLICY = DECODE('b3fd2e8b5764818d9b33e2bc8d9e84a61fa39e75cf0c41393ee6c7a9','hex')
-	AND ASSET.NAME = DECODE('456e6456696f6c656e6365506c61737469633437393761','hex')
-GROUP BY "asset"."policy", "asset"."name", "asset"."fingerprint";
+	asset.*,
+	CASE WHEN TX_METADATA.KEY IS NOT NULL 
+	 	 THEN JSONB_BUILD_OBJECT('json',TX_METADATA.JSON) || JSONB_BUILD_OBJECT('label',TX_METADATA.KEY)
+		 ELSE NULL 
+	END as metadata
+
+FROM "asset"
+LEFT JOIN "tx_metadata" ON "tx_metadata"."tx_id" = asset.last_minted_tx_id;
