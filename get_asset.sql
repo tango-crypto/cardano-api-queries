@@ -15,7 +15,7 @@ WITH asset AS (
 	INNER JOIN "tx" ON "tx"."id" = "ma_tx_mint"."tx_id"
 	INNER JOIN "block" ON "block"."id" = "tx"."block_id"
 	LEFT JOIN "tx_metadata" ON "tx_metadata"."tx_id" = tx.id
-	WHERE ASSET.FINGERPRINT = 'asset1l6rg97vuuqf7ycqyz5lwkmvzu4s2hdqdlk0yk2'
+	WHERE ASSET.FINGERPRINT = 'asset1l6rg97vuuqf7ycqyz5lwkmvzu4s2hdqdlk0yk2' -- asset.policy = decode('${identifier.substring(0, 56)}', 'hex') AND asset.name = decode('${identifier.substring(56)}', 'hex')
 )
 SELECT 
 	asset.*,
