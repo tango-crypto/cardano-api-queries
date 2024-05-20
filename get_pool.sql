@@ -11,7 +11,7 @@ FROM "pool_update" AS "pu"
 INNER JOIN "pool_hash" ON "pool_hash"."id" = "pu"."hash_id"
 INNER JOIN "epoch" ON "epoch"."no" = "pu"."active_epoch_no"
 LEFT JOIN "pool_metadata_ref" AS "pmr" ON "pmr"."id" = "pu"."meta_id"
-LEFT JOIN "pool_offline_data" AS "pod" ON "pod"."pmr_id" = "pmr"."id"
+LEFT JOIN "off_chain_pool_data" AS "pod" ON "pod"."pmr_id" = "pmr"."id"
 WHERE "pool_hash"."view" = 'pool1cr8vpy3ta3smcxjq8hfu8n2chxhtc78ukfruqjhfgarf5azypen'
 ORDER BY CASE WHEN epoch.no is null then 0 else "pu"."registered_tx_id" end DESC, "pu"."active_epoch_no" DESC
 LIMIT 1
