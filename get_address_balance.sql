@@ -1,3 +1,4 @@
+-- get address balance
 SELECT SUM(VALUE) AS BALANCE
 FROM "tx_out"
 WHERE NOT EXISTS
