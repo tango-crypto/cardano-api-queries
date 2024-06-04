@@ -1,3 +1,4 @@
+-- Get asset owners
 WITH "owners" AS
 (
 	SELECT 
