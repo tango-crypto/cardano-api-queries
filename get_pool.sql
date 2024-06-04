@@ -1,3 +1,4 @@
+-- Get pool data
 SELECT "pool_hash"."view" AS "pool_id",
 	ENCODE(POOL_HASH.HASH_RAW,'hex') AS ID,
 	"pu"."pledge",
