@@ -1,3 +1,4 @@
+-- get transaction UTXOs
 SELECT "utxo"."address",
 	ENCODE(TX.HASH,'hex') AS HASH,
 	"utxo"."index",
