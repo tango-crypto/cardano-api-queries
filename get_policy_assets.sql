@@ -1,3 +1,4 @@
+-- Get assets from a given policy
 WITH "asset" AS
 (
 	SELECT MAX(ASSET.ID) AS ID,
