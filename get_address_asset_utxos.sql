@@ -1,4 +1,4 @@
--- address/asset/utxos
+-- Get address/asset/utxos
 SELECT 
 	tx_out.tx_id,
 	tx_out.address,
