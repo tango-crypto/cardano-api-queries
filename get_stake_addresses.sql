@@ -1,3 +1,4 @@
+-- Get stake addresses
 select 
 DISTINCT (tx_out.address) as address
 FROM "tx_out"
