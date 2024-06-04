@@ -1,3 +1,4 @@
+-- Get address UTXOs
 WITH "t" AS
 	(SELECT DISTINCT(TX_OUT.TX_ID) AS TX_ID,
 			"tx_out"."id",
