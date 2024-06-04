@@ -1,3 +1,4 @@
+-- Get transaction
 SELECT "tx"."id",
 	"tx"."block_id",
 	ENCODE(TX.HASH,'hex') AS HASH,
