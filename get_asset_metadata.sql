@@ -1,3 +1,4 @@
+-- Get asset metadata
 WITH "asset" AS (
 	SELECT 
 		MAX(tx_metadata.tx_id) AS LAST_MINTED_TX_ID
