@@ -1,3 +1,4 @@
+-- Get transaction collateral
 select -- input collateral utxos
 "tx_out"."address",
 ENCODE(tt.HASH,'hex') AS HASH,
