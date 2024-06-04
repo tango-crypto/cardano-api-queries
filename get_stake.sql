@@ -1,3 +1,4 @@
+-- Get stake of a pool
 SELECT 
 	(
 	  CASE 
