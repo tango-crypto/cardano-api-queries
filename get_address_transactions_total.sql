@@ -1,3 +1,4 @@
+-- Get address transactions total
 SELECT SUM(T.TOTAL) AS TOTAL
 FROM
 	(SELECT COUNT(DISTINCT TX_OUT.TX_ID) AS TOTAL
