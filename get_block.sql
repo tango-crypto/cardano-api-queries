@@ -1,4 +1,4 @@
--- get block
+-- Get block
 SELECT "block"."id",
 	ENCODE(BLOCK.HASH,'hex') AS HASH,
 	"block"."epoch_no",
