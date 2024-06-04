@@ -1,3 +1,4 @@
+-- Get transaction mints
 select
 ENCODE(ASSET.NAME,'hex') AS ASSET_NAME,
 ENCODE(ASSET.POLICY,'hex') AS POLICY_ID,
