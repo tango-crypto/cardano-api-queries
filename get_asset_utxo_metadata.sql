@@ -1,3 +1,4 @@
+-- Get asset UTXO metadata
 SELECT 
     ENCODE(ASSET.POLICY,'hex') AS POLICY_ID,
 	ENCODE(ASSET.NAME,'hex') AS ASSET_NAME,
