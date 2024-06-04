@@ -1,3 +1,4 @@
+-- Get epoch parameters
 SELECT 
         "epoch_no",
 	"min_fee_a",
