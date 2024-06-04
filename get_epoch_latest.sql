@@ -1,3 +1,4 @@
+-- Get latest epoch
 SELECT
 epoch.id,
 epoch.out_sum,
