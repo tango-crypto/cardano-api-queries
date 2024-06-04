@@ -1,3 +1,4 @@
+-- Get transaction scripts
 select -- minting scripts
 distinct on (script.id) 
 script.type,
