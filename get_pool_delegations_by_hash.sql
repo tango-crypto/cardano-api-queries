@@ -1,3 +1,4 @@
+-- Get pool delegations by hash
 WITH "delegations" AS
 	(SELECT "d"."addr_id",
 			"d"."tx_id",
