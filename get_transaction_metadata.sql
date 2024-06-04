@@ -1,3 +1,4 @@
+-- get transaction metadata
 SELECT 
 "tx_metadata"."key" AS "label",
 "tx_metadata"."json"
