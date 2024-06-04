@@ -1,3 +1,4 @@
+-- Get asset
 WITH asset AS (
 	SELECT 
 		MIN(encode(asset.policy, 'hex')) as policy_id, 
