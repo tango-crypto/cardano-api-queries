@@ -1,3 +1,4 @@
+-- Get pool metadata
 create index idx_pool_hash_view on pool_hash(view);
 
 SELECT "pool_hash"."view" AS "pool_id",
